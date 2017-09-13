@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
 
 import com.ir.project.lucene.Index;
@@ -19,7 +20,7 @@ public class IndexingExecution {
 			// create standard index
 			// BASE 1
 			System.out.println("================================= INDEXING BASE 1 ======================================");
-			indexBase(Constants.STANDARD_INDEX_PATH, new EnglishAnalyzer(CharArraySet.EMPTY_SET), 1);
+			indexBase(Constants.STANDARD_INDEX_PATH, new StandardAnalyzer(CharArraySet.EMPTY_SET), 1);
 			
 			// BASE 2
 			// create stopwords index

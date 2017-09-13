@@ -6,6 +6,7 @@ import java.util.Scanner;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
@@ -28,7 +29,7 @@ public class SearchExecution {
 			switch(baseOp) {
 				case 1: // Querying Base 1
 					queryBase(query, Constants.STANDARD_INDEX_PATH, 
-							new EnglishAnalyzer(CharArraySet.EMPTY_SET));
+							new StandardAnalyzer(CharArraySet.EMPTY_SET));
 					break;
 				case 2: // Querying Base 2
 					queryBase(query, Constants.STOPWORDS_INDEX_PATH, 
