@@ -1,6 +1,7 @@
 package com.ir.project.run;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
@@ -15,28 +16,61 @@ import com.ir.project.util.Constants;
 
 public class SearchExecution {
 	
+	private static Scanner in;
+	
 	public static void main(String[] args) {
-		String query = "machine learning in information recovery";
+		
+		int baseOp = readBaseOption();
+		
+		String query = readQuery();
 		
 		try {
-			// Querying Base 1
-			queryBase(query, Constants.STANDARD_INDEX_PATH, new EnglishAnalyzer(CharArraySet.EMPTY_SET));
-			/*
-			// Querying Base 2
-			queryBase(query, Constants.STOPWORDS_INDEX_PATH, new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet()));
-
-			// Querying Base 3
-			queryBase(query, Constants.STEMMING_INDEX_PATH, new EnglishAnalyzer(CharArraySet.EMPTY_SET, CharArraySet.EMPTY_SET));
-
-			// Querying Base 4
-			queryBase(query, Constants.STOPSTEM_INDEX_PATH, new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet(), CharArraySet.EMPTY_SET));
-			*/
+			switch(baseOp) {
+				case 1: // Querying Base 1
+					queryBase(query, Constants.STANDARD_INDEX_PATH, 
+							new EnglishAnalyzer(CharArraySet.EMPTY_SET));
+					break;
+				case 2: // Querying Base 2
+					queryBase(query, Constants.STOPWORDS_INDEX_PATH, 
+							new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet()));
+					break;
+				case 3: // Querying Base 3
+					queryBase(query, Constants.STEMMING_INDEX_PATH, 
+							new EnglishAnalyzer(CharArraySet.EMPTY_SET, CharArraySet.EMPTY_SET));
+					break;
+				case 4: // Querying Base 4
+					queryBase(query, Constants.STOPSTEM_INDEX_PATH, 
+							new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet(), CharArraySet.EMPTY_SET));
+					break;
+				default:
+					System.out.println("Option not allowed.");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	private static String readQuery() {
+		in = new Scanner(System.in);
+		System.out.println("Inform query and press ENTER: ");
+		String query = in.next();
+		return query;
+	}
+
+	private static int readBaseOption() {
+		in = new Scanner(System.in);
+		System.out.println("1 : Standard");
+		System.out.println("2 : Stopwords");
+		System.out.println("3 : Stemming");
+		System.out.println("4 : Stop + Stemming");
+		
+		System.out.println("Choose base to query: ");
+		int baseOp = in.nextInt();
+		
+		return baseOp;
 	}
 
 	private static void queryBase(String query, String base, Analyzer analyzer) throws IOException, Exception {
@@ -46,15 +80,21 @@ public class SearchExecution {
 		
 		System.out.println("Consulta: "+ query);
 		
-		printFoundFiles(searchStandardIndex, foundFiles);
+		printFoundFiles(searchStandardIndex, foundFiles, true);
 	}
 	
-	private static void printFoundFiles(IndexSearcher searcher, TopDocs foundFiles) throws IOException {
-		System.out.println("Quantidade de documentos retornados: " + foundFiles.totalHits);
-		for (ScoreDoc foundFile : foundFiles.scoreDocs) {
-			Document document = searcher.doc(foundFile.doc);
-			System.out.println(document.get(Constants.FILENAME));
+	private static void printFoundFiles(IndexSearcher searcher, TopDocs foundFiles, boolean showReturnedFiles) throws IOException {
+		showReturnSize(foundFiles);
+		if(showReturnedFiles) {
+			for (ScoreDoc foundFile : foundFiles.scoreDocs) {
+				Document document = searcher.doc(foundFile.doc);
+				System.out.println(document.get(Constants.FILENAME));
+			}
 		}
+	}
+
+	private static void showReturnSize(TopDocs foundFiles) {
+		System.out.println("Quantidade de documentos retornados: " + foundFiles.totalHits);
 	}
 
 }

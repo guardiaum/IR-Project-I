@@ -1,10 +1,11 @@
 package com.ir.project.run;
 
 import java.io.IOException;
-import java.util.Collections;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.index.CorruptIndexException;
 
 import com.ir.project.lucene.Index;
 import com.ir.project.util.Constants;
@@ -18,67 +19,45 @@ public class IndexingExecution {
 			// create standard index
 			// BASE 1
 			System.out.println("================================= INDEXING BASE 1 ======================================");
-			Index standard = new Index(Constants.STANDARD_INDEX_PATH, new EnglishAnalyzer(CharArraySet.EMPTY_SET));
-			standard.deleteAll();
-			standard.startIndexing(Constants.DOCUMENTS_DS, new TextFileFilter());
-			standard.startIndexing(Constants.DOCUMENTS_IR, new TextFileFilter());
-			standard.startIndexing(Constants.DOCUMENTS_LG, new TextFileFilter());
-			standard.startIndexing(Constants.DOCUMENTS_ML, new TextFileFilter());
-			int out = standard.startIndexing(Constants.DOCUMENTS_NE, new TextFileFilter());
-			System.out.println(out + " files were indexed.");
-			System.out.println("Finish indexing base 1.");
-			standard.commit();
-			standard.close();
+			indexBase(Constants.STANDARD_INDEX_PATH, new EnglishAnalyzer(CharArraySet.EMPTY_SET), 1);
 			
 			// BASE 2
 			// create stopwords index
 			System.out.println("================================= INDEXING BASE 2 ======================================");
-			Index stop = new Index(Constants.STOPWORDS_INDEX_PATH, new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet()));
-			stop.deleteAll();	
-			stop.startIndexing(Constants.DOCUMENTS_DS, new TextFileFilter());
-			stop.startIndexing(Constants.DOCUMENTS_IR, new TextFileFilter());
-			stop.startIndexing(Constants.DOCUMENTS_LG, new TextFileFilter());
-			stop.startIndexing(Constants.DOCUMENTS_ML, new TextFileFilter());
-			int outStop = stop.startIndexing(Constants.DOCUMENTS_NE, new TextFileFilter());
-			System.out.println(outStop + " files were indexed.");
-			System.out.println("Finish indexing base 2.");
-			stop.commit();
-			stop.close();
+			indexBase(Constants.STOPWORDS_INDEX_PATH, new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet()), 2);
 			
 			// BASE 3
 			// DO NOT STOP AND STEM
 			System.out.println("================================= INDEXING BASE 3 ======================================");
-			Index stem = new Index(Constants.STEMMING_INDEX_PATH, new EnglishAnalyzer(CharArraySet.EMPTY_SET, CharArraySet.EMPTY_SET));
-			stem.deleteAll();	
-			stem.startIndexing(Constants.DOCUMENTS_DS, new TextFileFilter());
-			stem.startIndexing(Constants.DOCUMENTS_IR, new TextFileFilter());
-			stem.startIndexing(Constants.DOCUMENTS_LG, new TextFileFilter());
-			stem.startIndexing(Constants.DOCUMENTS_ML, new TextFileFilter());
-			int outStem = stem.startIndexing(Constants.DOCUMENTS_NE, new TextFileFilter());
-			System.out.println(outStem + " files were indexed.");
-			System.out.println("Finish indexing base 3.");
-			stem.commit();
-			stem.close();
+			indexBase(Constants.STEMMING_INDEX_PATH, new EnglishAnalyzer(CharArraySet.EMPTY_SET, CharArraySet.EMPTY_SET), 3);
 			
 			//BASE 4
 			// Stemming e Stopwords
 			System.out.println("================================= INDEXING BASE 4 ======================================");
-			Index stopAndStem = new Index(Constants.STOPSTEM_INDEX_PATH, 
-				new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet(), CharArraySet.EMPTY_SET));
-			stopAndStem.deleteAll();	
-			stopAndStem.startIndexing(Constants.DOCUMENTS_DS, new TextFileFilter());
-			stopAndStem.startIndexing(Constants.DOCUMENTS_IR, new TextFileFilter());
-			stopAndStem.startIndexing(Constants.DOCUMENTS_LG, new TextFileFilter());
-			stopAndStem.startIndexing(Constants.DOCUMENTS_ML, new TextFileFilter());
-			int outStopAndStem = stopAndStem.startIndexing(Constants.DOCUMENTS_NE, new TextFileFilter());
-			System.out.println(outStopAndStem + " files were indexed.");
-			System.out.println("Finish indexing base 4.");
-			stopAndStem.commit();
-			stopAndStem.close();
+			indexBase(Constants.STOPSTEM_INDEX_PATH, 
+				new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet(), CharArraySet.EMPTY_SET), 4);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void indexBase(String indexPath, Analyzer analyzer, int baseID) throws IOException, CorruptIndexException {
+		Index base = new Index(indexPath, analyzer);
+		
+		base.deleteAll();
+		
+		base.startIndexing(Constants.DOCUMENTS_DS, new TextFileFilter());
+		base.startIndexing(Constants.DOCUMENTS_IR, new TextFileFilter());
+		base.startIndexing(Constants.DOCUMENTS_LG, new TextFileFilter());
+		base.startIndexing(Constants.DOCUMENTS_ML, new TextFileFilter());
+		int out = base.startIndexing(Constants.DOCUMENTS_NE, new TextFileFilter());
+		
+		System.out.println(out + " files were indexed.");
+		System.out.println("Finish indexing base " + baseID);
+		
+		base.commit();
+		base.close();
 	}
 
 }
