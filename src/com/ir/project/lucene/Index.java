@@ -27,6 +27,14 @@ public class Index {
 		this.writer.deleteAll();
 	}
 	
+	public void close() throws CorruptIndexException, IOException {
+		this.writer.close();
+	}
+	
+	public void commit() throws IOException {
+		this.writer.commit();
+	}	
+	
 	public int startIndexing(String dir, FileFilter filter) throws IOException {
 		File[] files = new File(dir).listFiles();
 		for (File file : files) {
@@ -37,10 +45,6 @@ public class Index {
 			}
 		}
 		return this.writer.numDocs();
-	}
-	
-	public void close() throws CorruptIndexException, IOException {
-		this.writer.close();
 	}
 	
 	private void indexFile(File file) throws IOException{
