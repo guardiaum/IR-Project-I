@@ -56,7 +56,7 @@ public class SearchExecution {
 	private static String readQuery() {
 		in = new Scanner(System.in);
 		System.out.println("Inform query and press ENTER: ");
-		String query = in.next();
+		String query = in.nextLine();
 		return query;
 	}
 
@@ -86,9 +86,10 @@ public class SearchExecution {
 	private static void printFoundFiles(IndexSearcher searcher, TopDocs foundFiles, boolean showReturnedFiles) throws IOException {
 		showReturnSize(foundFiles);
 		if(showReturnedFiles) {
+			System.out.println("--- DOCUMENTS -----------------------------------------------------------------------------------");
 			for (ScoreDoc foundFile : foundFiles.scoreDocs) {
 				Document document = searcher.doc(foundFile.doc);
-				System.out.println(document.get(Constants.FILENAME));
+				System.out.println("> "+document.get(Constants.FILENAME));
 			}
 		}
 	}

@@ -50,7 +50,7 @@ public class Searcher {
 	public TopDocs queryFileContent(String query, IndexSearcher searcher, Analyzer analyzer) throws Exception {
 		QueryParser qp = new QueryParser(Constants.CONTENTS, analyzer);
 		Query queryParser = qp.parse(QueryParser.escape(query));
-		TopDocs hits = searcher.search(queryParser,  200);
+		TopDocs hits = searcher.search(queryParser,  210);
 		return hits;
 	}
 }
