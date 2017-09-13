@@ -25,7 +25,7 @@ public class IndexingExecution {
 			// BASE 2
 			// create stopwords index
 			System.out.println("================================= INDEXING BASE 2 ======================================");
-			indexBase(Constants.STOPWORDS_INDEX_PATH, new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet()), 2);
+			indexBase(Constants.STOPWORDS_INDEX_PATH, new StandardAnalyzer(EnglishAnalyzer.getDefaultStopSet()), 2);
 			
 			// BASE 3
 			// DO NOT STOP AND STEM

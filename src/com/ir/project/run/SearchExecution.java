@@ -33,7 +33,7 @@ public class SearchExecution {
 					break;
 				case 2: // Querying Base 2
 					queryBase(query, Constants.STOPWORDS_INDEX_PATH, 
-							new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet()));
+							new StandardAnalyzer(EnglishAnalyzer.getDefaultStopSet()));
 					break;
 				case 3: // Querying Base 3
 					queryBase(query, Constants.STEMMING_INDEX_PATH, 
